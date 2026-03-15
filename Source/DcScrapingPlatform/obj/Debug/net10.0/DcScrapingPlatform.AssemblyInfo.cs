@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("e7c4e590-a981-4f3f-b2a8-d46621703696")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("DcScrapingPlatform")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cda9e568c5ebaca5e38ead84199b4b6d99f3aac7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+17d471cb8d8f023ce3f574b0b20abeb380e15d40")]
 [assembly: System.Reflection.AssemblyProductAttribute("DcScrapingPlatform")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DcScrapingPlatform")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

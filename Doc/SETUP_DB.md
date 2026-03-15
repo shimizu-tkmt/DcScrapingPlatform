@@ -1,59 +1,33 @@
-# データベースセットアップ手順 - DcScrapingPlatform
+# データベースセットアップガイド (Neon & Local)
 
-本プロジェクトでは、**Neon (PostgreSQL)** をデータベースとして使用し、**Entity Framework Core (EF Core)** を用いてスキーマ管理を行っています。以下に、データベースを新規作成・再現するための手順を記載します。
+本プロジェクトでは、本番環境の安全性を守るため、ローカル開発時には個別のデータベース（Neon の開発用ブランチ）を使用し、機密情報は .NET の **User Secrets** 機能で管理します。
 
-## 1. 事前準備
-以下のツールがインストールされていることを確認してください。
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
-- `dotnet-ef` ツール（プロジェクトローカルにインストール済みの場合は `dotnet tool run dotnet-ef` を使用）
+## 1. 接続先の準備 (Neon)
 
-## 2. 接続文字列の設定
-`Source/DcScrapingPlatform/appsettings.json` の `ConnectionStrings` セクションに Neon DB の接続文字列を設定します。
+1.  [Neon コンソール](https://console.neon.tech/)にログインします。
+2.  プロジェクトの「Branches」から、自分専用のブランチ（例: `dev-user-name`）を作成します。
+3.  作成したブランチの「Connection String」をコピーします。
 
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Host=your-host.neon.tech;Database=neondb;Username=your-user;Password=your-password;SSL Mode=Require;Trust Server Certificate=true"
-}
+## 2. ローカル環境の設定 (User Secrets)
+
+ソースコード内の `appsettings.json` にはパスワードを記述しないでください。代わりに以下のコマンドをターミナルで実行して、ローカルマシンにのみ保存されるシークレットを設定します。
+
+```powershell
+# プロジェクトディレクトリ (Source/DcScrapingPlatform) で実行
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "コピーした接続文字列"
 ```
+
+## 3. 動作確認
+
+設定が完了したら、以下のコマンドで起動できるか確認してください。
+
+```powershell
+dotnet run --project Source/DcScrapingPlatform
+```
+
+ログに DB 接続エラーが出なければ設定成功です。
+
+---
 
 > [!IMPORTANT]
-> パスワード等の機密情報は、本番環境では環境変数や Azure Key Vault 等を使用して管理することを推奨します。
-
-## 3. データベースの構築（マイグレーションの適用）
-プロジェクトディレクトリ（`Source/DcScrapingPlatform`）で以下のコマンドを実行し、データベースにテーブルを作成します。
-
-```powershell
-# 依存関係の復元
-dotnet restore
-
-# データベースへマイグレーションを適用
-dotnet tool run dotnet-ef database update
-```
-
-これにより、以下のテーブルが作成されます：
-- `AspNetUsers` / `AspNetRoles` 等（Identity 認証に関連する標準テーブル）
-- `Profiles`（ユーザー固有設定）
-- `DcCredentials`（暗号化されたログイン情報）
-- `AssetHistories`（資産履歴データ）
-
-## 4. SQL スクリプトによる構築（代替手段）
-EF Core ツールが利用できない、または直接 SQL を実行したい場合は、以下のディレクトリにある SQL ファイルを順に実行してください。
-
-- [SQL クエリディレクトリ (Query/)](file:///c:/.Gemini/project/DcScrapingPlatform/Query/)
-
-各テーブル作成クエリ（`01_Create_AspNetRoles.sql` 等）およびインデックス作成クエリが個別に保存されています。
-
-## 5. スキーマの変更（開発者向け）
-モデル（`Models/` 配下）を修正した場合は、以下の手順でマイグレーションを追加・更新します。
-
-```powershell
-# マイグレーションの追加
-dotnet tool run dotnet-ef migrations add [MigrationName]
-
-# DBへの反映
-dotnet tool run dotnet-ef database update
-```
-
-## 5. 暗号鍵の設定
-UFJ ログイン情報の暗号化に必要な鍵を環境変数に設定してください。
-- `MASTER_ENCRYPTION_KEY`: 32バイトの Base64 文字列（AES-256用）
+> `appsettings.json` の `DefaultConnection` を書き換えてコミットしないでください。

@@ -5,7 +5,7 @@ var e=!1;const t=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,
   "mainAssemblyName": "DcScrapingPlatform.Client",
   "applicationEnvironment": "Development",
   "resources": {
-    "hash": "sha256-mRbuMp1J36ViRZw2LT0ZkgU8xgvY99EWuDZ3qZ1UuKM=",
+    "hash": "sha256-7cvxAK3+T36ibN/De58tg2ZToBCh4nphb/NFlZc4C8U=",
     "jsModuleNative": [
       {
         "name": "dotnet.native.4xbsgn06op.js"
@@ -1266,16 +1266,16 @@ var e=!1;const t=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,
       },
       {
         "virtualPath": "DcScrapingPlatform.Client.wasm",
-        "name": "DcScrapingPlatform.Client.an7mssp8rq.wasm",
-        "integrity": "sha256-Nuxk8BB59DsIA1Py1KQt+qByLzzP7S9gVR9TAbQtyxk=",
+        "name": "DcScrapingPlatform.Client.6vlzuk4z9d.wasm",
+        "integrity": "sha256-jvh0VWbdonXauaMyqpw2b/mrXFAq9mVuI4j2MBslkwo=",
         "cache": "force-cache"
       }
     ],
     "pdb": [
       {
         "virtualPath": "DcScrapingPlatform.Client.pdb",
-        "name": "DcScrapingPlatform.Client.ck11v56q70.pdb",
-        "integrity": "sha256-1K6b43AGFhLyeE7zTL84v5yV5CsuJaPkvnuaLk85Z8A=",
+        "name": "DcScrapingPlatform.Client.f54tkvda5m.pdb",
+        "integrity": "sha256-vYVxiAmXTzTYoqCa/RzJqveZc0lidhPsZVj8y2g4hl8=",
         "cache": "force-cache"
       }
     ],
