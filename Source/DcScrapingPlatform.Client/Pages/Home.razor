@@ -1,0 +1,89 @@
+@page "/"
+
+<PageTitle>Dashboard - DcScrapingPlatform</PageTitle>
+
+<MudText Typo="Typo.h3" Class="mb-6">Dashboard</MudText>
+
+<MudGrid>
+    <MudItem xs="12" sm="6" md="4">
+        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+            <MudText Typo="Typo.h6">Total Balance</MudText>
+            <MudText Typo="Typo.h3" Color="Color.Primary" Class="mt-4">¥4,250,000</MudText>
+            <MudText Typo="Typo.body2" Class="mt-2" Color="Color.Success">+¥120,000 (Last Month)</MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4">
+        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+            <MudText Typo="Typo.h6">Profit / Loss</MudText>
+            <MudText Typo="Typo.h3" Color="Color.Secondary" Class="mt-4">+¥850,000</MudText>
+            <MudText Typo="Typo.body2" Class="mt-2">+25.0% (All Time)</MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4">
+        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+            <MudText Typo="Typo.h6">Next Fetch</MudText>
+            <MudText Typo="Typo.h3" Class="mt-4">Tomorrow</MudText>
+            <MudText Typo="Typo.body2" Class="mt-2">Scheduled at 03:00 AM</MudText>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="8">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-4">Asset Growth</MudText>
+            <MudChart T="double" ChartType="ChartType.Line" ChartSeries="@_series" XAxisLabels="@_xAxisLabels" Width="100%" Height="350px" />
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" md="4">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-4">Portfolio Allocation</MudText>
+            <MudChart T="double" ChartType="ChartType.Donut" Data="@_donutData" Labels="@_donutLabels" Width="100%" Height="300px" />
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-4">Recent Holdings</MudText>
+            <MudSimpleTable Style="overflow-x: auto;">
+                <thead>
+                    <tr>
+                        <th>Fund Name</th>
+                        <th>Category</th>
+                        <th>Balance</th>
+                        <th>Profit/Loss</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Global Equity Fund</td>
+                        <td>Equity</td>
+                        <td>¥2,100,000</td>
+                        <td><MudText Color="Color.Success">+¥450,000</MudText></td>
+                    </tr>
+                    <tr>
+                        <td>Japan Debt Fund</td>
+                        <td>Bond</td>
+                        <td>¥1,200,000</td>
+                        <td><MudText Color="Color.Error">-¥12,000</MudText></td>
+                    </tr>
+                    <tr>
+                        <td>REIT Balanced</td>
+                        <td>Real Estate</td>
+                        <td>¥950,000</td>
+                        <td><MudText Color="Color.Success">+¥85,000</MudText></td>
+                    </tr>
+                </tbody>
+            </MudSimpleTable>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private List<ChartSeries<double>> _series = new List<ChartSeries<double>>()
+    {
+        new ChartSeries<double>() { Name = "Balance", Data = new double[] { 3500000, 3620000, 3750000, 3810000, 4050000, 4250000 } }
+    };
+    private string[] _xAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun" };
+
+    private double[] _donutData = { 50, 25, 25 };
+    private string[] _donutLabels = { "Equity", "Bond", "Real Estate" };
+}

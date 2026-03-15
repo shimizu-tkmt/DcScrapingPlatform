@@ -1,0 +1,73 @@
+@page "/account/login"
+@using MudBlazor
+@using System.ComponentModel.DataAnnotations
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@layout MainLayout
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
+    <MudPaper Elevation="4" Class="pa-8">
+        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-8">Sign In</MudText>
+        
+        <EditForm Model="@_loginModel" OnValidSubmit="HandleLogin">
+            <DataAnnotationsValidator />
+            
+            <MudTextField T="string" Label="Email" Variant="Variant.Outlined" Class="mt-4" 
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email"
+                          @bind-Value="_loginModel.Email" For="@(() => _loginModel.Email)" />
+            
+            <MudTextField T="string" Label="Password" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4" 
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock"
+                          @bind-Value="_loginModel.Password" For="@(() => _loginModel.Password)" />
+
+            <div class="d-flex justify-space-between align-center mt-6">
+                <MudCheckBox T="bool" Label="Remember Me" Color="Color.Primary" @bind-Value="_loginModel.RememberMe" />
+                <MudLink href="/account/forgot-password">Forgot password?</MudLink>
+            </div>
+
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
+            }
+
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large" Class="mt-8">Login</MudButton>
+        </EditForm>
+
+        <MudText Align="Align.Center" Class="mt-6">
+            Don't have an account? <MudLink href="/account/register">Sign Up</MudLink>
+        </MudText>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private LoginModel _loginModel = new();
+    private string? _errorMessage;
+
+    private async Task HandleLogin()
+    {
+        _errorMessage = null;
+        var response = await Http.PostAsJsonAsync("api/account/login", _loginModel);
+        
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            _errorMessage = "Invalid email or password.";
+        }
+    }
+
+    public class LoginModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = "";
+
+        [Required]
+        [MinLength(6)]
+        public string Password { get; set; } = "";
+
+        public bool RememberMe { get; set; }
+    }
+}
