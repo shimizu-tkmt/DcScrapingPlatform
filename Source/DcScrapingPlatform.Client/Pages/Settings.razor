@@ -1,0 +1,44 @@
+@page "/settings"
+@using MudBlazor
+@layout MainLayout
+
+<PageTitle>Settings - DcScrapingPlatform</PageTitle>
+
+<MudText Typo="Typo.h3" Class="mb-6">Settings</MudText>
+
+<MudGrid>
+    <MudItem xs="12" md="6">
+        <MudPaper Elevation="2" Class="pa-6">
+            <MudText Typo="Typo.h6" Class="mb-4">Google Sheets Integration</MudText>
+            <MudTextField @bind-Value="_spreadsheetId" Label="Spreadsheet ID" Variant="Variant.Outlined" HelperText="Enter the ID from the URL of your Google Sheet" Class="mb-4" />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">Save Spreadsheet Settings</MudButton>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudPaper Elevation="2" Class="pa-6">
+            <MudText Typo="Typo.h6" Class="mb-4">DC Pension Login (UFJ)</MudText>
+            <MudAlert Severity="Severity.Info" Class="mb-4">Your credentials will be encrypted with AES-256 before storage.</MudAlert>
+            <MudTextField @bind-Value="_ufjId" Label="Login ID" Variant="Variant.Outlined" Class="mb-4" />
+            <MudTextField @bind-Value="_ufjPassword" Label="Password" Variant="Variant.Outlined" InputType="InputType.Password" Class="mb-4" />
+            <MudButton Variant="Variant.Filled" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Security">Encrypt & Save Credentials</MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" Class="ml-2" StartIcon="@Icons.Material.Filled.PlayArrow">Test Connection</MudButton>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12">
+        <MudPaper Elevation="2" Class="pa-6">
+            <MudText Typo="Typo.h6" Class="mb-4">Encryption Status</MudText>
+            <MudStack Row="true" Spacing="4">
+                <MudChip T="string" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success">AES-256 Enabled</MudChip>
+                <MudChip T="string" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success">Neon SSL/TLS Enabled</MudChip>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private string _spreadsheetId = string.Empty;
+    private string _ufjId = string.Empty;
+    private string _ufjPassword = string.Empty;
+}

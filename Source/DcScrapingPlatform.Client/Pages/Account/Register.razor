@@ -1,0 +1,75 @@
+@page "/account/register"
+@using MudBlazor
+@using System.ComponentModel.DataAnnotations
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@layout MainLayout
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
+    <MudPaper Elevation="4" Class="pa-8">
+        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-8">Create Account</MudText>
+        
+        <EditForm Model="@_registerModel" OnValidSubmit="HandleRegister">
+            <DataAnnotationsValidator />
+            
+            <MudTextField T="string" Label="Email" Variant="Variant.Outlined" Class="mt-4" 
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email"
+                          @bind-Value="_registerModel.Email" For="@(() => _registerModel.Email)" />
+            
+            <MudTextField T="string" Label="Password" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4" 
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock"
+                          @bind-Value="_registerModel.Password" For="@(() => _registerModel.Password)" />
+            
+            <MudTextField T="string" Label="Confirm Password" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4" 
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock"
+                          @bind-Value="_registerModel.ConfirmPassword" For="@(() => _registerModel.ConfirmPassword)" />
+
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
+            }
+
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large" Class="mt-10">Register</MudButton>
+        </EditForm>
+
+        <MudText Align="Align.Center" Class="mt-6">
+            Already have an account? <MudLink href="/account/login">Sign In</MudLink>
+        </MudText>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private RegisterModel _registerModel = new();
+    private string? _errorMessage;
+
+    private async Task HandleRegister()
+    {
+        _errorMessage = null;
+        var response = await Http.PostAsJsonAsync("api/account/register", _registerModel);
+        
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            var result = await response.Content.ReadAsStringAsync();
+            _errorMessage = "Registration failed. Please check the information and try again.";
+        }
+    }
+
+    public class RegisterModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = "";
+
+        [Required]
+        [MinLength(6)]
+        public string Password { get; set; } = "";
+
+        [Required]
+        [Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
+        public string ConfirmPassword { get; set; } = "";
+    }
+}
