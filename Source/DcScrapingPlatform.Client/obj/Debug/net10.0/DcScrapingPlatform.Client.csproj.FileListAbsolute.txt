@@ -1093,10 +1093,10 @@ C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\obj\Debug
 C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\obj\Debug\net10.0\compressed\kxa9tn4pca-{0}-6jkolue1ka-6jkolue1ka.gz
 C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\obj\Debug\net10.0\compressed\kzjrw7ik4i-{0}-5dwodu6xxb-5dwodu6xxb.gz
 C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\obj\Debug\net10.0\compressed\tyd18brypf-{0}-os3wj2jstd-os3wj2jstd.gz
-C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\bin\Debug\net10.0\wwwroot\_framework\DcScrapingPlatform.Client.an7mssp8rq.wasm
-C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\bin\Debug\net10.0\wwwroot\_framework\DcScrapingPlatform.Client.ck11v56q70.pdb
-C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\bin\Debug\net10.0\wwwroot\_framework\DcScrapingPlatform.Client.an7mssp8rq.wasm.gz
-C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\bin\Debug\net10.0\wwwroot\_framework\DcScrapingPlatform.Client.ck11v56q70.pdb.gz
-C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\obj\Debug\net10.0\compressed\yfhvumml2j-{0}-an7mssp8rq-an7mssp8rq.gz
-C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\obj\Debug\net10.0\compressed\a8cq9fpern-{0}-ck11v56q70-ck11v56q70.gz
-C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\obj\Debug\net10.0\compressed\3656c6h5xm-{0}-viwesl5avf-viwesl5avf.gz
+C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\bin\Debug\net10.0\wwwroot\_framework\DcScrapingPlatform.Client.6vlzuk4z9d.wasm
+C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\bin\Debug\net10.0\wwwroot\_framework\DcScrapingPlatform.Client.f54tkvda5m.pdb
+C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\bin\Debug\net10.0\wwwroot\_framework\DcScrapingPlatform.Client.6vlzuk4z9d.wasm.gz
+C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\bin\Debug\net10.0\wwwroot\_framework\DcScrapingPlatform.Client.f54tkvda5m.pdb.gz
+C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\obj\Debug\net10.0\compressed\yfhvumml2j-{0}-6vlzuk4z9d-6vlzuk4z9d.gz
+C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\obj\Debug\net10.0\compressed\a8cq9fpern-{0}-f54tkvda5m-f54tkvda5m.gz
+C:\.Gemini\project\DcScrapingPlatform\Source\DcScrapingPlatform.Client\obj\Debug\net10.0\compressed\3656c6h5xm-{0}-pc448iqc60-pc448iqc60.gz
