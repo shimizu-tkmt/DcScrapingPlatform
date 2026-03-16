@@ -6,39 +6,59 @@
 
 <MudText Typo="Typo.h3" Class="mb-6">Settings</MudText>
 
-<MudGrid>
-    <MudItem xs="12" md="6">
-        <MudPaper Elevation="2" Class="pa-6">
-            <MudText Typo="Typo.h6" Class="mb-4">Google Sheets Integration</MudText>
-            <MudTextField @bind-Value="_spreadsheetId" Label="Spreadsheet ID" Variant="Variant.Outlined" HelperText="Enter the ID from the URL of your Google Sheet" Class="mb-4" />
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">Save Spreadsheet Settings</MudButton>
-        </MudPaper>
-    </MudItem>
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+    <MudTabPanel Text="Profile Settings" Icon="@Icons.Material.Filled.Person">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="_username" Label="Username" Variant="Variant.Outlined" Class="mb-4" />
+                <MudTextField @bind-Value="_email" Label="Email Address" Variant="Variant.Outlined" Class="mb-4" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">Update Profile</MudButton>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudPaper Class="pa-4 bg-light shadow-none border-dashed" Style="border: 2px dashed #e0e0e0;">
+                    <MudText Typo="Typo.body2" Color="Color.Info">
+                        Your personal information is kept minimal. We do not collect phone numbers or physical addresses.
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+    <MudTabPanel Text="DC Integration" Icon="@Icons.Material.Filled.Security">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.h6" Class="mb-4">Google Sheets Integration</MudText>
+                <MudTextField @bind-Value="_spreadsheetId" Label="Spreadsheet ID" Variant="Variant.Outlined" HelperText="Enter the ID from the URL of your Google Sheet" Class="mb-4" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save">Save Spreadsheet Settings</MudButton>
+            </MudItem>
 
-    <MudItem xs="12" md="6">
-        <MudPaper Elevation="2" Class="pa-6">
-            <MudText Typo="Typo.h6" Class="mb-4">DC Pension Login (UFJ)</MudText>
-            <MudAlert Severity="Severity.Info" Class="mb-4">Your credentials will be encrypted with AES-256 before storage.</MudAlert>
-            <MudTextField @bind-Value="_ufjId" Label="Login ID" Variant="Variant.Outlined" Class="mb-4" />
-            <MudTextField @bind-Value="_ufjPassword" Label="Password" Variant="Variant.Outlined" InputType="InputType.Password" Class="mb-4" />
-            <MudButton Variant="Variant.Filled" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Security">Encrypt & Save Credentials</MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Info" Class="ml-2" StartIcon="@Icons.Material.Filled.PlayArrow">Test Connection</MudButton>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.h6" Class="mb-4">DC Pension Login (UFJ)</MudText>
+                <MudAlert Severity="Severity.Info" Class="mb-4">Your credentials will be encrypted with AES-256 before storage.</MudAlert>
+                <MudTextField @bind-Value="_ufjId" Label="Login ID" Variant="Variant.Outlined" Class="mb-4" />
+                <MudTextField @bind-Value="_ufjPassword" Label="Password" Variant="Variant.Outlined" InputType="InputType.Password" Class="mb-4" />
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Security">Encrypt & Save Credentials</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Info" Class="ml-2" StartIcon="@Icons.Material.Filled.PlayArrow">Test Connection</MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudTabPanel>
+    <MudTabPanel Text="Danger Zone" Icon="@Icons.Material.Filled.Warning" Color="Color.Error">
+        <MudPaper Class="pa-4 border-solid border-2 mud-border-error">
+            <MudText Typo="Typo.h6" Color="Color.Error">Delete Account</MudText>
+            <MudText Typo="Typo.body2" Class="mb-4">Once you delete your account, there is no going back. Please be certain.</MudText>
+            <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="OnDeleteAccount">Delete My Account</MudButton>
         </MudPaper>
-    </MudItem>
-
-    <MudItem xs="12">
-        <MudPaper Elevation="2" Class="pa-6">
-            <MudText Typo="Typo.h6" Class="mb-4">Encryption Status</MudText>
-            <MudStack Row="true" Spacing="4">
-                <MudChip T="string" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success">AES-256 Enabled</MudChip>
-                <MudChip T="string" Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success">Neon SSL/TLS Enabled</MudChip>
-            </MudStack>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+    </MudTabPanel>
+</MudTabs>
 
 @code {
+    private string _username = "Sample User";
+    private string _email = "user@example.com";
     private string _spreadsheetId = string.Empty;
     private string _ufjId = string.Empty;
     private string _ufjPassword = string.Empty;
+
+    private void OnDeleteAccount()
+    {
+        // 削除確認ダイアログ等の実装
+    }
 }
