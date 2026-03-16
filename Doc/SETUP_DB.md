@@ -13,8 +13,8 @@
 ソースコード内の `appsettings.json` にはパスワードを記述しないでください。代わりに以下のコマンドをターミナルで実行して、ローカルマシンにのみ保存されるシークレットを設定します。
 
 ```powershell
-# プロジェクトディレクトリ (Source/DcScrapingPlatform) で実行
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "コピーした接続文字列"
+# プロジェクトルートで実行
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "コピーした接続文字列" --project Source/DcScrapingPlatform
 ```
 
 ## 3. 動作確認
