@@ -23,6 +23,9 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<IScrapingService, ScrapingService>();
 
+// HttpClient (for Client-side Components)
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["BackendUrl"] ?? "http://localhost:5048") });
+
 // Database (Neon / PostgreSQL)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
