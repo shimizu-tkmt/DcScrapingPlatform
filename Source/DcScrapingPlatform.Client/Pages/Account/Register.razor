@@ -7,20 +7,20 @@
 
 <MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
     <MudPaper Elevation="4" Class="pa-8">
-        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-8">Create Account</MudText>
+        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-8">新規登録</MudText>
         
         <EditForm Model="@_registerModel" OnValidSubmit="HandleRegister">
             <DataAnnotationsValidator />
             
-            <MudTextField T="string" Label="Email" Variant="Variant.Outlined" Class="mt-4" 
+            <MudTextField T="string" Label="メールアドレス" Variant="Variant.Outlined" Class="mt-4" 
                           Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email"
                           @bind-Value="_registerModel.Email" For="@(() => _registerModel.Email)" />
             
-            <MudTextField T="string" Label="Password" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4" 
+            <MudTextField T="string" Label="パスワード" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4" 
                           Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock"
                           @bind-Value="_registerModel.Password" For="@(() => _registerModel.Password)" />
             
-            <MudTextField T="string" Label="Confirm Password" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4" 
+            <MudTextField T="string" Label="パスワード（確認用）" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4" 
                           Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock"
                           @bind-Value="_registerModel.ConfirmPassword" For="@(() => _registerModel.ConfirmPassword)" />
 
@@ -29,11 +29,11 @@
                 <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
             }
 
-            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large" Class="mt-10">Register</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large" Class="mt-10">新規登録</MudButton>
         </EditForm>
 
         <MudText Align="Align.Center" Class="mt-6">
-            Already have an account? <MudLink href="/account/login">Sign In</MudLink>
+            すでにアカウントをお持ちですか？ <MudLink href="/account/login">ログイン</MudLink>
         </MudText>
     </MudPaper>
 </MudContainer>
@@ -54,7 +54,7 @@
         else
         {
             var result = await response.Content.ReadAsStringAsync();
-            _errorMessage = "Registration failed. Please check the information and try again.";
+            _errorMessage = "登録に失敗しました。入力内容を確認してください。";
         }
     }
 
@@ -69,7 +69,7 @@
         public string Password { get; set; } = "";
 
         [Required]
-        [Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
+        [Compare(nameof(Password), ErrorMessage = "パスワードが一致しません")]
         public string ConfirmPassword { get; set; } = "";
     }
 }
