@@ -21,6 +21,7 @@ builder.Services.AddMudServices();
 
 // Services
 builder.Services.AddScoped<IEncryptionService, EncryptionService>();
+builder.Services.AddScoped<IScrapingService, ScrapingService>();
 
 // Database (Neon / PostgreSQL)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");

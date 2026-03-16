@@ -42,7 +42,37 @@
 
     <MudItem xs="12">
         <MudPaper Elevation="2" Class="pa-4">
-            <MudText Typo="Typo.h6" Class="mb-4">Recent Holdings</MudText>
+            <div class="d-flex align-center justify-space-between mb-4">
+                <MudText Typo="Typo.h6">Scraping Activities</MudText>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="RunScraping">
+                    Run Scraping Now
+                </MudButton>
+            </div>
+            <MudDataGrid Items="@_logs" Hover="true" Bordered="false" Striped="true" FixedHeader="true" Height="300px">
+                <Columns>
+                    <PropertyColumn Property="x => x.Target" Title="Target" />
+                    <TemplateColumn Title="Status">
+                        <CellTemplate>
+                            <MudChip T="string" Color="@GetStatusColor(context.Item.Status)" Size="Size.Small" Variant="Variant.Text">
+                                @context.Item.Status
+                            </MudChip>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <PropertyColumn Property="x => x.StartedAt" Title="Started At" Format="yyyy-MM-dd HH:mm" />
+                    <PropertyColumn Property="x => x.FinishedAt" Title="Finished At" Format="yyyy-MM-dd HH:mm" />
+                    <TemplateColumn Title="Actions" CellClass="d-flex justify-end">
+                        <CellTemplate>
+                            <MudIconButton Icon="@Icons.Material.Filled.Info" Size="Size.Small" />
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12">
+        <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.h6" Class="mb-4">Portfolio Holdings</MudText>
             <MudSimpleTable Style="overflow-x: auto;">
                 <thead>
                     <tr>
@@ -86,4 +116,32 @@
 
     private double[] _donutData = { 50, 25, 25 };
     private string[] _donutLabels = { "Equity", "Bond", "Real Estate" };
+
+    private List<ScrapingLogSummary> _logs = new()
+    {
+        new ScrapingLogSummary { Target = "UFJ DC Asset", Status = "Success", StartedAt = DateTime.Now.AddDays(-1), FinishedAt = DateTime.Now.AddDays(-1).AddMinutes(2) },
+        new ScrapingLogSummary { Target = "UFJ DC Asset", Status = "Error", StartedAt = DateTime.Now.AddDays(-2), FinishedAt = DateTime.Now.AddDays(-2).AddMinutes(1) },
+        new ScrapingLogSummary { Target = "UFJ DC Asset", Status = "Success", StartedAt = DateTime.Now.AddDays(-3), FinishedAt = DateTime.Now.AddDays(-3).AddMinutes(2) }
+    };
+
+    private Color GetStatusColor(string status) => status switch
+    {
+        "Success" => Color.Success,
+        "Error" => Color.Error,
+        "Running" => Color.Info,
+        _ => Color.Default
+    };
+
+    private void RunScraping()
+    {
+        // 実際のトリガーは API を介して行うが、UIプロトタイプとしてメッセージを表示
+    }
+
+    public class ScrapingLogSummary
+    {
+        public string Target { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public DateTime StartedAt { get; set; }
+        public DateTime? FinishedAt { get; set; }
+    }
 }

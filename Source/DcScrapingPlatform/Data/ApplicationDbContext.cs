@@ -14,6 +14,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Profile> Profiles { get; set; }
     public DbSet<DcCredential> DcCredentials { get; set; }
     public DbSet<AssetHistory> AssetHistories { get; set; }
+    public DbSet<ScrapingLog> ScrapingLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -36,5 +37,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasOne(a => a.User)
             .WithMany()
             .HasForeignKey(a => a.UserId);
+
+        // ScrapingLog と ApplicationUser の 1:N 関係
+        builder.Entity<ScrapingLog>()
+            .HasOne(s => s.User)
+            .WithMany()
+            .HasForeignKey(s => s.UserId);
     }
 }
