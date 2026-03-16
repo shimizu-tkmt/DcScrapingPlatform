@@ -1,41 +1,41 @@
 @page "/"
 
-<PageTitle>Dashboard - DcScrapingPlatform</PageTitle>
+<PageTitle>ダッシュボード - DC資産管理</PageTitle>
 
-<MudText Typo="Typo.h3" Class="mb-6">Dashboard</MudText>
+<MudText Typo="Typo.h3" Class="mb-6">ダッシュボード</MudText>
 
 <MudGrid>
     <MudItem xs="12" sm="6" md="4">
         <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-            <MudText Typo="Typo.h6">Total Balance</MudText>
+            <MudText Typo="Typo.h6">総資産評価額</MudText>
             <MudText Typo="Typo.h3" Color="Color.Primary" Class="mt-4">¥4,250,000</MudText>
-            <MudText Typo="Typo.body2" Class="mt-2" Color="Color.Success">+¥120,000 (Last Month)</MudText>
+            <MudText Typo="Typo.body2" Class="mt-2" Color="Color.Success">+¥120,000 (前月比)</MudText>
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="6" md="4">
         <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-            <MudText Typo="Typo.h6">Profit / Loss</MudText>
+            <MudText Typo="Typo.h6">評価損益</MudText>
             <MudText Typo="Typo.h3" Color="Color.Secondary" Class="mt-4">+¥850,000</MudText>
-            <MudText Typo="Typo.body2" Class="mt-2">+25.0% (All Time)</MudText>
+            <MudText Typo="Typo.body2" Class="mt-2">+25.0% (通算累計)</MudText>
         </MudPaper>
     </MudItem>
     <MudItem xs="12" sm="6" md="4">
         <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-            <MudText Typo="Typo.h6">Next Fetch</MudText>
-            <MudText Typo="Typo.h3" Class="mt-4">Tomorrow</MudText>
-            <MudText Typo="Typo.body2" Class="mt-2">Scheduled at 03:00 AM</MudText>
+            <MudText Typo="Typo.h6">次回更新予定</MudText>
+            <MudText Typo="Typo.h3" Class="mt-4">明日</MudText>
+            <MudText Typo="Typo.body2" Class="mt-2">03:00 AM に実行予定</MudText>
         </MudPaper>
     </MudItem>
 
     <MudItem xs="12" md="8">
         <MudPaper Elevation="2" Class="pa-4">
-            <MudText Typo="Typo.h6" Class="mb-4">Asset Growth</MudText>
+            <MudText Typo="Typo.h6" Class="mb-4">資産推移</MudText>
             <MudChart T="double" ChartType="ChartType.Line" ChartSeries="@_series" XAxisLabels="@_xAxisLabels" Width="100%" Height="350px" />
         </MudPaper>
     </MudItem>
     <MudItem xs="12" md="4">
         <MudPaper Elevation="2" Class="pa-4">
-            <MudText Typo="Typo.h6" Class="mb-4">Portfolio Allocation</MudText>
+            <MudText Typo="Typo.h6" Class="mb-4">ポートフォリオ構成</MudText>
             <MudChart T="double" ChartType="ChartType.Donut" Data="@_donutData" Labels="@_donutLabels" Width="100%" Height="300px" />
         </MudPaper>
     </MudItem>
@@ -43,24 +43,24 @@
     <MudItem xs="12">
         <MudPaper Elevation="2" Class="pa-4">
             <div class="d-flex align-center justify-space-between mb-4">
-                <MudText Typo="Typo.h6">Scraping Activities</MudText>
+                <MudText Typo="Typo.h6">スクレイピング実行履歴</MudText>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="RunScraping">
-                    Run Scraping Now
+                    今すぐ実行
                 </MudButton>
             </div>
             <MudDataGrid Items="@_logs" Hover="true" Bordered="false" Striped="true" FixedHeader="true" Height="300px">
                 <Columns>
-                    <PropertyColumn Property="x => x.Target" Title="Target" />
-                    <TemplateColumn Title="Status">
+                    <PropertyColumn Property="x => x.Target" Title="対象" />
+                    <TemplateColumn Title="ステータス">
                         <CellTemplate>
                             <MudChip T="string" Color="@GetStatusColor(context.Item.Status)" Size="Size.Small" Variant="Variant.Text">
-                                @context.Item.Status
+                                @(context.Item.Status == "Success" ? "成功" : context.Item.Status == "Error" ? "エラー" : context.Item.Status)
                             </MudChip>
                         </CellTemplate>
                     </TemplateColumn>
-                    <PropertyColumn Property="x => x.StartedAt" Title="Started At" Format="yyyy-MM-dd HH:mm" />
-                    <PropertyColumn Property="x => x.FinishedAt" Title="Finished At" Format="yyyy-MM-dd HH:mm" />
-                    <TemplateColumn Title="Actions" CellClass="d-flex justify-end">
+                    <PropertyColumn Property="x => x.StartedAt" Title="開始日時" Format="yyyy-MM-dd HH:mm" />
+                    <PropertyColumn Property="x => x.FinishedAt" Title="終了日時" Format="yyyy-MM-dd HH:mm" />
+                    <TemplateColumn Title="操作" CellClass="d-flex justify-end">
                         <CellTemplate>
                             <MudIconButton Icon="@Icons.Material.Filled.Info" Size="Size.Small" />
                         </CellTemplate>
@@ -72,14 +72,14 @@
 
     <MudItem xs="12">
         <MudPaper Elevation="2" Class="pa-4">
-            <MudText Typo="Typo.h6" Class="mb-4">Portfolio Holdings</MudText>
+            <MudText Typo="Typo.h6" Class="mb-4">保有銘柄一覧</MudText>
             <MudSimpleTable Style="overflow-x: auto;">
                 <thead>
                     <tr>
-                        <th>Fund Name</th>
-                        <th>Category</th>
-                        <th>Balance</th>
-                        <th>Profit/Loss</th>
+                        <th>ファンド名</th>
+                        <th>資産区分</th>
+                        <th>評価金額</th>
+                        <th>評価損益</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -110,12 +110,12 @@
 @code {
     private List<ChartSeries<double>> _series = new List<ChartSeries<double>>()
     {
-        new ChartSeries<double>() { Name = "Balance", Data = new double[] { 3500000, 3620000, 3750000, 3810000, 4050000, 4250000 } }
+        new ChartSeries<double>() { Name = "資産残高", Data = new double[] { 3500000, 3620000, 3750000, 3810000, 4050000, 4250000 } }
     };
-    private string[] _xAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun" };
+    private string[] _xAxisLabels = { "1月", "2月", "3月", "4月", "5月", "6月" };
 
     private double[] _donutData = { 50, 25, 25 };
-    private string[] _donutLabels = { "Equity", "Bond", "Real Estate" };
+    private string[] _donutLabels = { "株式", "債券", "リート・その他" };
 
     private List<ScrapingLogSummary> _logs = new()
     {
