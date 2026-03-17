@@ -1,113 +1,178 @@
 @page "/"
+@using MudBlazor
+@using System.ComponentModel.DataAnnotations
+@inject HttpClient Http
+@inject NavigationManager Navigation
 
-<PageTitle>ダッシュボード - DC資産管理</PageTitle>
+<PageTitle>DC資産管理 - スマートな将来設計</PageTitle>
 
-<MudText Typo="Typo.h3" Class="mb-6">ダッシュボード</MudText>
+<AuthorizeView>
+    <Authorized>
+        <MudText Typo="Typo.h3" Class="mb-6">ダッシュボード</MudText>
 
-<MudGrid>
-    <MudItem xs="12" sm="6" md="4">
-        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-            <MudText Typo="Typo.h6">総資産評価額</MudText>
-            <MudText Typo="Typo.h3" Color="Color.Primary" Class="mt-4">¥4,250,000</MudText>
-            <MudText Typo="Typo.body2" Class="mt-2" Color="Color.Success">+¥120,000 (前月比)</MudText>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6" md="4">
-        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-            <MudText Typo="Typo.h6">評価損益</MudText>
-            <MudText Typo="Typo.h3" Color="Color.Secondary" Class="mt-4">+¥850,000</MudText>
-            <MudText Typo="Typo.body2" Class="mt-2">+25.0% (通算累計)</MudText>
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" sm="6" md="4">
-        <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-            <MudText Typo="Typo.h6">次回更新予定</MudText>
-            <MudText Typo="Typo.h3" Class="mt-4">明日</MudText>
-            <MudText Typo="Typo.body2" Class="mt-2">03:00 AM に実行予定</MudText>
-        </MudPaper>
-    </MudItem>
+        <MudGrid>
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+                    <MudText Typo="Typo.h6">総資産評価額</MudText>
+                    <MudText Typo="Typo.h3" Color="Color.Primary" Class="mt-4">¥4,250,000</MudText>
+                    <MudText Typo="Typo.body2" Class="mt-2" Color="Color.Success">+¥120,000 (前月比)</MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+                    <MudText Typo="Typo.h6">評価損益</MudText>
+                    <MudText Typo="Typo.h3" Color="Color.Secondary" Class="mt-4">+¥850,000</MudText>
+                    <MudText Typo="Typo.body2" Class="mt-2">+25.0% (通算累計)</MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+                    <MudText Typo="Typo.h6">次回更新予定</MudText>
+                    <MudText Typo="Typo.h3" Class="mt-4">明日</MudText>
+                    <MudText Typo="Typo.body2" Class="mt-2">03:00 AM に実行予定</MudText>
+                </MudPaper>
+            </MudItem>
 
-    <MudItem xs="12" md="8">
-        <MudPaper Elevation="2" Class="pa-4">
-            <MudText Typo="Typo.h6" Class="mb-4">資産推移</MudText>
-            <MudChart T="double" ChartType="ChartType.Line" ChartSeries="@_series" XAxisLabels="@_xAxisLabels" Width="100%" Height="350px" />
-        </MudPaper>
-    </MudItem>
-    <MudItem xs="12" md="4">
-        <MudPaper Elevation="2" Class="pa-4">
-            <MudText Typo="Typo.h6" Class="mb-4">ポートフォリオ構成</MudText>
-            <MudChart T="double" ChartType="ChartType.Donut" Data="@_donutData" Labels="@_donutLabels" Width="100%" Height="300px" />
-        </MudPaper>
-    </MudItem>
+            <MudItem xs="12" md="8">
+                <MudPaper Elevation="2" Class="pa-4">
+                    <MudText Typo="Typo.h6" Class="mb-4">資産推移</MudText>
+                    <MudChart T="double" ChartType="ChartType.Line" ChartSeries="@_series" XAxisLabels="@_xAxisLabels" Width="100%" Height="350px" />
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudPaper Elevation="2" Class="pa-4">
+                    <MudText Typo="Typo.h6" Class="mb-4">ポートフォリオ構成</MudText>
+                    <MudChart T="double" ChartType="ChartType.Donut" Data="@_donutData" Labels="@_donutLabels" Width="100%" Height="300px" />
+                </MudPaper>
+            </MudItem>
 
-    <MudItem xs="12">
-        <MudPaper Elevation="2" Class="pa-4">
-            <div class="d-flex align-center justify-space-between mb-4">
-                <MudText Typo="Typo.h6">スクレイピング実行履歴</MudText>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="RunScraping">
-                    今すぐ実行
-                </MudButton>
-            </div>
-            <MudDataGrid Items="@_logs" Hover="true" Bordered="false" Striped="true" FixedHeader="true" Height="300px">
-                <Columns>
-                    <PropertyColumn Property="x => x.Target" Title="対象" />
-                    <TemplateColumn Title="ステータス">
-                        <CellTemplate>
-                            <MudChip T="string" Color="@GetStatusColor(context.Item.Status)" Size="Size.Small" Variant="Variant.Text">
-                                @(context.Item.Status == "Success" ? "成功" : context.Item.Status == "Error" ? "エラー" : context.Item.Status)
-                            </MudChip>
-                        </CellTemplate>
-                    </TemplateColumn>
-                    <PropertyColumn Property="x => x.StartedAt" Title="開始日時" Format="yyyy-MM-dd HH:mm" />
-                    <PropertyColumn Property="x => x.FinishedAt" Title="終了日時" Format="yyyy-MM-dd HH:mm" />
-                    <TemplateColumn Title="操作" CellClass="d-flex justify-end">
-                        <CellTemplate>
-                            <MudIconButton Icon="@Icons.Material.Filled.Info" Size="Size.Small" />
-                        </CellTemplate>
-                    </TemplateColumn>
-                </Columns>
-            </MudDataGrid>
-        </MudPaper>
-    </MudItem>
+            <MudItem xs="12">
+                <MudPaper Elevation="2" Class="pa-4">
+                    <div class="d-flex align-center justify-space-between mb-4">
+                        <MudText Typo="Typo.h6">スクレイピング実行履歴</MudText>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="RunScraping">
+                            今すぐ実行
+                        </MudButton>
+                    </div>
+                    <MudDataGrid Items="@_logs" Hover="true" Bordered="false" Striped="true" FixedHeader="true" Height="300px">
+                        <Columns>
+                            <PropertyColumn Property="x => x.Target" Title="対象" />
+                            <TemplateColumn Title="ステータス">
+                                <CellTemplate>
+                                    <MudChip T="string" Color="@GetStatusColor(context.Item.Status)" Size="Size.Small" Variant="Variant.Text">
+                                        @(context.Item.Status == "Success" ? "成功" : context.Item.Status == "Error" ? "エラー" : context.Item.Status)
+                                    </MudChip>
+                                </CellTemplate>
+                            </TemplateColumn>
+                            <PropertyColumn Property="x => x.StartedAt" Title="開始日時" Format="yyyy-MM-dd HH:mm" />
+                            <PropertyColumn Property="x => x.FinishedAt" Title="終了日時" Format="yyyy-MM-dd HH:mm" />
+                            <TemplateColumn Title="操作" CellClass="d-flex justify-end">
+                                <CellTemplate>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Info" Size="Size.Small" />
+                                </CellTemplate>
+                            </TemplateColumn>
+                        </Columns>
+                    </MudDataGrid>
+                </MudPaper>
+            </MudItem>
 
-    <MudItem xs="12">
-        <MudPaper Elevation="2" Class="pa-4">
-            <MudText Typo="Typo.h6" Class="mb-4">保有銘柄一覧</MudText>
-            <MudSimpleTable Style="overflow-x: auto;">
-                <thead>
-                    <tr>
-                        <th>ファンド名</th>
-                        <th>資産区分</th>
-                        <th>評価金額</th>
-                        <th>評価損益</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Global Equity Fund</td>
-                        <td>Equity</td>
-                        <td>¥2,100,000</td>
-                        <td><MudText Color="Color.Success">+¥450,000</MudText></td>
-                    </tr>
-                    <tr>
-                        <td>Japan Debt Fund</td>
-                        <td>Bond</td>
-                        <td>¥1,200,000</td>
-                        <td><MudText Color="Color.Error">-¥12,000</MudText></td>
-                    </tr>
-                    <tr>
-                        <td>REIT Balanced</td>
-                        <td>Real Estate</td>
-                        <td>¥950,000</td>
-                        <td><MudText Color="Color.Success">+¥85,000</MudText></td>
-                    </tr>
-                </tbody>
-            </MudSimpleTable>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+            <MudItem xs="12">
+                <MudPaper Elevation="2" Class="pa-4">
+                    <MudText Typo="Typo.h6" Class="mb-4">保有銘柄一覧</MudText>
+                    <MudSimpleTable Style="overflow-x: auto;">
+                        <thead>
+                            <tr>
+                                <th>ファンド名</th>
+                                <th>資産区分</th>
+                                <th>評価金額</th>
+                                <th>評価損益</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Global Equity Fund</td>
+                                <td>Equity</td>
+                                <td>¥2,100,000</td>
+                                <td><MudText Color="Color.Success">+¥450,000</MudText></td>
+                            </tr>
+                            <tr>
+                                <td>Japan Debt Fund</td>
+                                <td>Bond</td>
+                                <td>¥1,200,000</td>
+                                <td><MudText Color="Color.Error">-¥12,000</MudText></td>
+                            </tr>
+                            <tr>
+                                <td>REIT Balanced</td>
+                                <td>Real Estate</td>
+                                <td>¥950,000</td>
+                                <td><MudText Color="Color.Success">+¥85,000</MudText></td>
+                            </tr>
+                        </tbody>
+                    </MudSimpleTable>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </Authorized>
+    <NotAuthorized>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="mt-16">
+            <MudGrid Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <MudItem xs="12" md="6" Class="pa-8">
+                    <MudText Typo="Typo.h2" Color="Color.Primary" Class="fw-bold mb-4">DC資産の管理を、<br />もっとスマートに。</MudText>
+                    <MudText Typo="Typo.h5" Class="mb-8" Style="line-height: 1.6;">
+                        複雑な確定拠出年金のデータを自動で取得・可視化。<br />
+                        あなたの将来設計を強力にサポートします。
+                    </MudText>
+                    <MudStack Spacing="4">
+                        <MudPaper Class="pa-4 d-flex align-center" Elevation="1">
+                            <MudIcon Icon="@Icons.Material.Filled.AutoFixHigh" Color="Color.Primary" Class="mr-4" />
+                            <MudText Typo="Typo.body1">全自動スクレイピングでデータ入力をゼロに</MudText>
+                        </MudPaper>
+                        <MudPaper Class="pa-4 d-flex align-center" Elevation="1">
+                            <MudIcon Icon="@Icons.Material.Filled.Security" Color="Color.Primary" Class="mr-4" />
+                            <MudText Typo="Typo.body1">AES-256暗号化による徹底したセキュリティ</MudText>
+                        </MudPaper>
+                        <MudPaper Class="pa-4 d-flex align-center" Elevation="1">
+                            <MudIcon Icon="@Icons.Material.Filled.TableChart" Color="Color.Primary" Class="mr-4" />
+                            <MudText Typo="Typo.body1">Googleスプレッドシートへの自動エクスポート</MudText>
+                        </MudPaper>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="12" md="5" Class="pa-8">
+                    <MudPaper Elevation="4" Class="pa-8">
+                        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-8">今すぐ始める</MudText>
+                        <EditForm Model="@_registerModel" OnValidSubmit="HandleRegister">
+                            <DataAnnotationsValidator />
+                            <MudTextField T="string" Label="メールアドレス" Variant="Variant.Outlined" Class="mt-4"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email"
+                                          @bind-Value="_registerModel.Email" For="@(() => _registerModel.Email)" />
+                            
+                            <MudTextField T="string" Label="パスワード" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock"
+                                          @bind-Value="_registerModel.Password" For="@(() => _registerModel.Password)" />
+                            
+                            <MudTextField T="string" Label="パスワード（確認用）" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock"
+                                          @bind-Value="_registerModel.ConfirmPassword" For="@(() => _registerModel.ConfirmPassword)" />
+
+                            @if (!string.IsNullOrEmpty(_errorMessage))
+                            {
+                                <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
+                            }
+
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large" Class="mt-10">アカウント作成</MudButton>
+                        </EditForm>
+                        <MudText Align="Align.Center" Class="mt-6">
+                            すでにアカウントをお持ちですか？ <MudLink href="/account/login">ログイン</MudLink>
+                        </MudText>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
+    // --- Dashboard Data ---
     private List<ChartSeries<double>> _series = new List<ChartSeries<double>>()
     {
         new ChartSeries<double>() { Name = "資産残高", Data = new double[] { 3500000, 3620000, 3750000, 3810000, 4050000, 4250000 } }
@@ -134,7 +199,6 @@
 
     private void RunScraping()
     {
-        // 実際のトリガーは API を介して行うが、UIプロトタイプとしてメッセージを表示
     }
 
     public class ScrapingLogSummary
@@ -143,5 +207,40 @@
         public string Status { get; set; } = string.Empty;
         public DateTime StartedAt { get; set; }
         public DateTime? FinishedAt { get; set; }
+    }
+
+    // --- Signup Data & Logic ---
+    private RegisterModel _registerModel = new();
+    private string? _errorMessage;
+
+    private async Task HandleRegister()
+    {
+        _errorMessage = null;
+        var response = await Http.PostAsJsonAsync("api/account/register", _registerModel);
+        
+        if (response.IsSuccessStatusCode)
+        {
+            // サインアップ後はアカウント設定（/settings）へ遷移
+            Navigation.NavigateTo("/settings", forceLoad: true);
+        }
+        else
+        {
+            _errorMessage = "登録に失敗しました。入力内容を確認してください。";
+        }
+    }
+
+    public class RegisterModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = "";
+
+        [Required]
+        [MinLength(6)]
+        public string Password { get; set; } = "";
+
+        [Required]
+        [Compare(nameof(Password), ErrorMessage = "パスワードが一致しません")]
+        public string ConfirmPassword { get; set; } = "";
     }
 }
