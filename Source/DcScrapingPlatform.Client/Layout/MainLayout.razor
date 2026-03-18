@@ -1,29 +1,86 @@
+@using DcScrapingPlatform.Client.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Net.Http.Json
 @inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
 
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudPopoverProvider />
 
-<MudLayout>
-    <MudAppBar Elevation="1" Color="Color.Primary">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5" Class="ml-3">DC資産管理プラットフォーム</MudText>
-        <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" />
-    </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        <NavMenu />
-    </MudDrawer>
-    <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Large" Class="mt-16">
-            @Body
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>
+<AuthorizeView>
+    <Authorized>
+        <MudLayout>
+            <MudAppBar Elevation="1" Color="Color.Primary">
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+                <MudText Typo="Typo.h5" Class="ml-3">DC資産管理プラットフォーム</MudText>
+                <MudSpacer />
+                <form action="Account/Logout" method="post" style="display:inline">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="ReturnUrl" value="" />
+                    <MudIconButton ButtonType="ButtonType.Submit" Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" Title="ログアウト" />
+                </form>
+            </MudAppBar>
+            <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+                <NavMenu />
+            </MudDrawer>
+            <MudMainContent>
+                <MudContainer MaxWidth="MaxWidth.Large" Class="mt-16">
+                    @Body
+                </MudContainer>
+            </MudMainContent>
+        </MudLayout>
+    </Authorized>
+    <NotAuthorized>
+        <MudLayout>
+            <MudMainContent>
+                <MudContainer MaxWidth="MaxWidth.Large" Class="mt-16">
+                    @Body
+                </MudContainer>
+            </MudMainContent>
+        </MudLayout>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     bool _drawerOpen = true;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (AuthStateTask == null) return;
+
+        var authState = await AuthStateTask;
+        if (authState.User.Identity?.IsAuthenticated == true)
+        {
+            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+            var path = uri.AbsolutePath.ToLower();
+
+            // 除外パス（無限ループ防止）
+            if (path.Contains("/account/initialsetup") || path.Contains("/account/logout") || path.Contains("/account/login") || path.Contains("/account/register"))
+            {
+                return;
+            }
+
+            try
+            {
+                var status = await HttpClient.GetFromJsonAsync<SetupStatus>("api/Setup/status");
+                if (status != null && !status.IsComplete)
+                {
+                    NavigationManager.NavigateTo("/Account/InitialSetup");
+                }
+            }
+            catch (Exception ex)
+            {
+                // API 呼び出し失敗時はログ出力等に留め、無限リダイレクトを避けるため何もしない
+                Console.WriteLine($"Setup status check failed: {ex.Message}");
+            }
+        }
+    }
 
     void DrawerToggle()
     {
