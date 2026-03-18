@@ -6,6 +6,7 @@ namespace DcScrapingPlatform.Services;
 public interface IEncryptionService
 {
     (byte[] EncryptedData, byte[] Iv) Encrypt(string plainText);
+    byte[] Encrypt(string plainText, byte[] iv);
     string Decrypt(byte[] cipherText, byte[] iv);
 }
 
@@ -30,9 +31,16 @@ public class EncryptionService : IEncryptionService
     public (byte[] EncryptedData, byte[] Iv) Encrypt(string plainText)
     {
         using var aes = Aes.Create();
-        aes.Key = _key;
         aes.GenerateIV();
         var iv = aes.IV;
+        return (Encrypt(plainText, iv), iv);
+    }
+
+    public byte[] Encrypt(string plainText, byte[] iv)
+    {
+        using var aes = Aes.Create();
+        aes.Key = _key;
+        aes.IV = iv;
 
         var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
         using var ms = new MemoryStream();
@@ -42,7 +50,7 @@ public class EncryptionService : IEncryptionService
             sw.Write(plainText);
         }
 
-        return (ms.ToArray(), iv);
+        return ms.ToArray();
     }
 
     public string Decrypt(byte[] cipherText, byte[] iv)
