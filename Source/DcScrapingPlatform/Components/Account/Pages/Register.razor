@@ -1,0 +1,96 @@
+@page "/Account/Register"
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+@using DcScrapingPlatform.Models
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager NavigationManager
+@inject ILogger<Register> Logger
+
+<PageTitle>新規登録 - DC資産管理</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
+    <MudPaper Elevation="4" Class="pa-8">
+        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-8">新規登録</MudText>
+        
+        <EditForm Model="Input" AspRoute-ReturnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+            <DataAnnotationsValidator />
+            
+            <MudTextField @bind-Value="Input.Email" For="@(() => Input.Email)"
+                          Label="メールアドレス" Variant="Variant.Outlined" Class="mt-4" 
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email" />
+            
+            <MudTextField @bind-Value="Input.Password" For="@(() => Input.Password)"
+                          Label="パスワード" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4" 
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock" />
+            
+            <MudTextField @bind-Value="Input.ConfirmPassword" For="@(() => Input.ConfirmPassword)"
+                          Label="パスワード（確認用）" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4" 
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock" />
+
+            @if (identityErrors.Any())
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-4">
+                    @foreach (var error in identityErrors)
+                    {
+                        <MudText Typo="Typo.body2">@error.Description</MudText>
+                    }
+                </MudAlert>
+            }
+
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large" Class="mt-10">新規登録</MudButton>
+        </EditForm>
+
+        <MudText Align="Align.Center" Class="mt-6">
+            すでにアカウントをお持ちですか？ <MudLink href="/Account/Login">ログイン</MudLink>
+        </MudText>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [SupplyParameterFromForm]
+    public InputModel Input { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    protected override void OnInitialized() => Input ??= new();
+
+    private IEnumerable<IdentityError> identityErrors = Enumerable.Empty<IdentityError>();
+
+    public async Task RegisterUser(EditContext editContext)
+    {
+        var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+        var result = await UserManager.CreateAsync(user, Input.Password);
+
+        if (result.Succeeded)
+        {
+            Logger.LogInformation("User created a new account with password.");
+            await SignInManager.SignInAsync(user, isPersistent: false);
+            NavigationManager.NavigateTo(ReturnUrl ?? "/settings");
+        }
+        else
+        {
+            identityErrors = result.Errors;
+        }
+    }
+
+    public sealed class InputModel
+    {
+        [Required(ErrorMessage = "メールアドレスは必須です")]
+        [EmailAddress(ErrorMessage = "有効なメールアドレスを入力してください")]
+        [Display(Name = "Email")]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessage = "パスワードは必須です")]
+        [StringLength(100, ErrorMessage = "{0}は少なくとも{2}文字、最大{1}文字である必要があります。", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; } = "";
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "パスワードと確認用パスワードが一致しません。")]
+        public string ConfirmPassword { get; set; } = "";
+    }
+}

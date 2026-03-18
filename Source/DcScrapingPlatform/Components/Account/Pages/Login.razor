@@ -1,0 +1,85 @@
+@page "/Account/Login"
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+@using DcScrapingPlatform.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject ILogger<Login> Logger
+@inject NavigationManager NavigationManager
+
+<PageTitle>ログイン - DC資産管理</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-16">
+    <MudPaper Elevation="4" Class="pa-8">
+        <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-8">ログイン</MudText>
+        
+        <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+            <DataAnnotationsValidator />
+            
+            <MudTextField @bind-Value="Input.Email" For="@(() => Input.Email)"
+                          Label="メールアドレス" Variant="Variant.Outlined" Class="mt-4" 
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email" />
+            
+            <MudTextField @bind-Value="Input.Password" For="@(() => Input.Password)"
+                          Label="パスワード" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4" 
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock" />
+
+            <div class="d-flex align-center mt-4">
+                <MudCheckBox @bind-Value="Input.RememberMe" Label="ログイン状態を保持する" Color="Color.Primary" />
+            </div>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mt-4">@errorMessage</MudAlert>
+            }
+
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large" Class="mt-10">ログイン</MudButton>
+        </EditForm>
+
+        <MudText Align="Align.Center" Class="mt-6">
+            アカウントをお持ちでないですか？ <MudLink href="/Account/Register">新規登録</MudLink>
+        </MudText>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private string? errorMessage;
+
+    [SupplyParameterFromForm]
+    public InputModel Input { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    protected override void OnInitialized() => Input ??= new();
+
+    public async Task LoginUser(EditContext editContext)
+    {
+        // This doesn't count login failures towards account lockout
+        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+        var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        if (result.Succeeded)
+        {
+            Logger.LogInformation("User logged in.");
+            NavigationManager.NavigateTo(ReturnUrl ?? "/");
+        }
+        else
+        {
+            errorMessage = "エラー: ログインに失敗しました。メールアドレスまたはパスワードを確認してください。";
+        }
+    }
+
+    public sealed class InputModel
+    {
+        [Required(ErrorMessage = "メールアドレスは必須です")]
+        [EmailAddress(ErrorMessage = "有効なメールアドレスを入力してください")]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessage = "パスワードは必須です")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = "";
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
+    }
+}
