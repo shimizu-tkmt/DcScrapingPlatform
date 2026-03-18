@@ -1,4 +1,5 @@
 @page "/"
+@rendermode InteractiveServer
 @using MudBlazor
 @using System.ComponentModel.DataAnnotations
 @inject HttpClient Http
@@ -6,7 +7,7 @@
 
 <PageTitle>DC資産管理 - スマートな将来設計</PageTitle>
 
-<AuthorizeView>
+<AuthorizeView Context="authContext">
     <Authorized>
         <MudText Typo="Typo.h3" Class="mb-6">ダッシュボード</MudText>
 
@@ -58,16 +59,16 @@
                         <Columns>
                             <PropertyColumn Property="x => x.Target" Title="対象" />
                             <TemplateColumn Title="ステータス">
-                                <CellTemplate>
-                                    <MudChip T="string" Color="@GetStatusColor(context.Item.Status)" Size="Size.Small" Variant="Variant.Text">
-                                        @(context.Item.Status == "Success" ? "成功" : context.Item.Status == "Error" ? "エラー" : context.Item.Status)
+                                <CellTemplate Context="cellContext">
+                                    <MudChip T="string" Color="@GetStatusColor(cellContext.Item.Status)" Size="Size.Small" Variant="Variant.Text">
+                                        @(cellContext.Item.Status == "Success" ? "成功" : cellContext.Item.Status == "Error" ? "エラー" : cellContext.Item.Status)
                                     </MudChip>
                                 </CellTemplate>
                             </TemplateColumn>
                             <PropertyColumn Property="x => x.StartedAt" Title="開始日時" Format="yyyy-MM-dd HH:mm" />
                             <PropertyColumn Property="x => x.FinishedAt" Title="終了日時" Format="yyyy-MM-dd HH:mm" />
                             <TemplateColumn Title="操作" CellClass="d-flex justify-end">
-                                <CellTemplate>
+                                <CellTemplate Context="cellContext">
                                     <MudIconButton Icon="@Icons.Material.Filled.Info" Size="Size.Small" />
                                 </CellTemplate>
                             </TemplateColumn>
@@ -140,29 +141,16 @@
                 <MudItem xs="12" md="5" Class="pa-8">
                     <MudPaper Elevation="4" Class="pa-8">
                         <MudText Typo="Typo.h4" Align="Align.Center" Class="mb-8">今すぐ始める</MudText>
-                        <EditForm Model="@_registerModel" OnValidSubmit="HandleRegister">
-                            <DataAnnotationsValidator />
-                            <MudTextField T="string" Label="メールアドレス" Variant="Variant.Outlined" Class="mt-4"
-                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Email"
-                                          @bind-Value="_registerModel.Email" For="@(() => _registerModel.Email)" />
-                            
-                            <MudTextField T="string" Label="パスワード" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4"
-                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock"
-                                          @bind-Value="_registerModel.Password" For="@(() => _registerModel.Password)" />
-                            
-                            <MudTextField T="string" Label="パスワード（確認用）" Variant="Variant.Outlined" InputType="InputType.Password" Class="mt-4"
-                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Lock"
-                                          @bind-Value="_registerModel.ConfirmPassword" For="@(() => _registerModel.ConfirmPassword)" />
-
-                            @if (!string.IsNullOrEmpty(_errorMessage))
-                            {
-                                <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
-                            }
-
-                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large" Class="mt-10">アカウント作成</MudButton>
-                        </EditForm>
+                        <MudText Typo="Typo.body1" Align="Align.Center" Class="mb-8">
+                            無料でアカウントを作成して、<br />あなたの資産管理を効率化しましょう。
+                        </MudText>
+                        
+                        <MudButton href="/Account/Register" Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" Size="Size.Large" Class="mt-4">
+                            新規アカウント作成
+                        </MudButton>
+                        
                         <MudText Align="Align.Center" Class="mt-6">
-                            すでにアカウントをお持ちですか？ <MudLink href="/account/login">ログイン</MudLink>
+                            すでにアカウントをお持ちですか？ <MudLink href="/Account/Login">ログイン</MudLink>
                         </MudText>
                     </MudPaper>
                 </MudItem>
@@ -172,6 +160,10 @@
 </AuthorizeView>
 
 @code {
+    protected override void OnInitialized()
+    {
+    }
+
     // --- Dashboard Data ---
     private List<ChartSeries<double>> _series = new List<ChartSeries<double>>()
     {
@@ -207,40 +199,5 @@
         public string Status { get; set; } = string.Empty;
         public DateTime StartedAt { get; set; }
         public DateTime? FinishedAt { get; set; }
-    }
-
-    // --- Signup Data & Logic ---
-    private RegisterModel _registerModel = new();
-    private string? _errorMessage;
-
-    private async Task HandleRegister()
-    {
-        _errorMessage = null;
-        var response = await Http.PostAsJsonAsync("api/account/register", _registerModel);
-        
-        if (response.IsSuccessStatusCode)
-        {
-            // サインアップ後はアカウント設定（/settings）へ遷移
-            Navigation.NavigateTo("/settings", forceLoad: true);
-        }
-        else
-        {
-            _errorMessage = "登録に失敗しました。入力内容を確認してください。";
-        }
-    }
-
-    public class RegisterModel
-    {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; } = "";
-
-        [Required]
-        [MinLength(6)]
-        public string Password { get; set; } = "";
-
-        [Required]
-        [Compare(nameof(Password), ErrorMessage = "パスワードが一致しません")]
-        public string ConfirmPassword { get; set; } = "";
     }
 }

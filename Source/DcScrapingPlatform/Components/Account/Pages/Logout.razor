@@ -1,0 +1,16 @@
+@page "/Account/Logout"
+@using Microsoft.AspNetCore.Identity
+@using DcScrapingPlatform.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager NavigationManager
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        if (SignInManager.IsSignedIn(SignInManager.Context.User))
+        {
+            await SignInManager.SignOutAsync();
+        }
+        NavigationManager.NavigateTo("/");
+    }
+}
